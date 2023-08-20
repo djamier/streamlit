@@ -1,9 +1,9 @@
-import snowflake.connector
-import pandas as pd
 import streamlit as st
+import pandas as pd
+import os
+import snowflake.connector
 import plotly.express as px
 import pendulum
-import os
 
 def app():
 
@@ -82,20 +82,13 @@ def app():
         )
         return fig
 
-    @st.cache_data
-    def show_bar_chart(result):
-        fig_sales = create_sales_bar_chart(result)
-        with st.container():
-            st.plotly_chart(fig_sales, use_container_width=True)
 
+    conn = get_snowflake_connection()
 
-    def main():
-        conn = get_snowflake_connection()
-        start_date, end_date = get_date_range()
-        sales_query = read_query_file('sql/summary_sales.sql')
-        result = execute_query(conn, sales_query, start_date,end_date )
-        show_bar_chart(result)
+    start_date, end_date = get_date_range()
+    query = read_query_file('first_project/sql/sales_bar_chart.sql')
+    result = execute_query(conn, query, start_date,end_date )
+    fig = create_sales_bar_chart(result)
 
-
-    if __name__ == '__main__':
-        main()
+    with st.container():
+        st.plotly_chart(fig, use_container_width=True)
