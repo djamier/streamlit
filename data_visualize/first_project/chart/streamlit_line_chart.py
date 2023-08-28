@@ -5,7 +5,6 @@ import snowflake.connector
 import plotly.express as px
 import pendulum
 
-
 def app():
 
     @st.cache_resource
@@ -36,10 +35,10 @@ def app():
         default_start_date = default_end_date.start_of('month')
             
         dates = st.date_input(
-                label='Dates', 
-                value=(default_start_date, default_end_date),
-                key='date_input'
-            )
+            label='Dates',
+            value=(default_start_date, default_end_date),
+            key='date_input'
+        )
 
         if len(dates) != 2:
             st.stop()
@@ -49,9 +48,7 @@ def app():
 
 
     @st.cache_data
-    def read_query_file(
-        query_file
-    ): 
+    def read_query_file(query_file): 
         with open(query_file, 'r') as file:
             query = file.read()
         return query
@@ -69,21 +66,14 @@ def app():
             'end_date_str': f"'{end_date}'"
         }
 
-        query = query.format(**replace_filter)
-        result = pd.read_sql(
-            query,
-            _conn
-        )
+        formatted_query = query.format(**replace_filter)
+        result = pd.read_sql(formatted_query,_conn)
         return result
 
 
     @st.cache_data
-    def create_sales_line_chart(
-        result
-    ):
-        result['ORDER_DATE'] = pd.to_datetime(
-            result['ORDER_DATE']
-        ).dt.day
+    def create_sales_line_chart(result):
+        result['ORDER_DATE'] = pd.to_datetime(result['ORDER_DATE']).dt.day
 
         fig = px.line(
             result, 
@@ -96,7 +86,6 @@ def app():
                 'Online': '#29C5F6'
             }
         )
-        
         for x, y in zip(result['ORDER_DATE'], result['TOTAL_SALES']):
             max_yaxis = max(result['TOTAL_SALES'])
             text = f'Rp. {y:,.0f}'
@@ -132,6 +121,5 @@ def app():
     result = execute_query(conn, query, start_date, end_date)
     fig = create_sales_line_chart(result)
 
-    # st.header('Line chart')
     with st.container():
         st.plotly_chart(fig)

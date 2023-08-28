@@ -28,12 +28,17 @@ def app():
         )
         return conn
 
+
     @st.cache_data(experimental_allow_widgets=True)
     def get_date_range():
         default_end_date = pendulum.today().date()
         default_start_date = default_end_date.start_of('month')
             
-        dates = st.date_input(label='Dates', value=(default_start_date, default_end_date), key='date_input')
+        dates = st.date_input(
+            label='Dates',
+            value=(default_start_date, default_end_date),
+            key='date_input'
+        )
 
         if len(dates) != 2:
             st.stop()
@@ -41,14 +46,20 @@ def app():
         start_date, end_date = dates
         return start_date, end_date
 
+
     @st.cache_data
     def read_query_file(query_file):
         with open(query_file, 'r') as file:
             query = file.read()
         return query
 
+
     @st.cache_data
-    def execute_query(_conn, query, start_date, end_date):
+    def execute_query(
+        _conn, query,
+        start_date,
+        end_date
+    ):
         replace_filter = {
             'start_date_str': f"'{start_date}'",
             'end_date_str': f"'{end_date}'"
@@ -58,11 +69,19 @@ def app():
         result = pd.read_sql(formatted_query, _conn)
         return result
 
+
     @st.cache_data
     def create_sales_bar_chart(result):
         result = result.sort_values('TOTAL_SALES')
 
-        fig = px.bar(result, x='ORDER_SOURCE', y='TOTAL_SALES', orientation='v', width=10, color_discrete_sequence=['#4ADEDE'])
+        fig = px.bar(
+            result,
+            x='ORDER_SOURCE',
+            y='TOTAL_SALES',
+            orientation='v',
+            width=10,
+            color_discrete_sequence=['#4ADEDE']
+        )
         for x, y in zip(result['ORDER_SOURCE'], result['TOTAL_SALES']):
             fig.add_annotation(
                 x=x,
