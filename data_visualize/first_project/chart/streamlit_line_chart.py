@@ -5,6 +5,7 @@ import snowflake.connector
 import plotly.express as px
 import pendulum
 
+
 def app():
 
     @st.cache_resource
@@ -28,6 +29,7 @@ def app():
         )
         return conn
     
+
     @st.cache_data(experimental_allow_widgets=True)
     def get_date_range():
         default_end_date = pendulum.today().date()
@@ -45,6 +47,7 @@ def app():
         start_date, end_date = dates
         return start_date, end_date
 
+
     @st.cache_data
     def read_query_file(
         query_file
@@ -52,6 +55,7 @@ def app():
         with open(query_file, 'r') as file:
             query = file.read()
         return query
+
 
     @st.cache_data
     def execute_query(
@@ -71,6 +75,7 @@ def app():
             _conn
         )
         return result
+
 
     @st.cache_data
     def create_sales_line_chart(
@@ -111,13 +116,14 @@ def app():
                 xaxis_title='Days',
                 yaxis_title='Sales',
                 yaxis_range=[0, max_yaxis],
-                xaxis_range=[0, 28],
+                xaxis_range=[0, 31],
                 xaxis=dict(
                     tickangle=1,
                     tickfont=dict(size=10)
                 )
             )
         return fig
+
 
     conn = get_snowflake_connection()
 
