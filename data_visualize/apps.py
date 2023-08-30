@@ -1,7 +1,7 @@
 from _lib.app import Nav, App
 from first_project import intro
-from first_project.chart import (
-    streamlit_bar_chart, streamlit_line_chart
+from first_project.section import (
+    sales_report
 )
 import streamlit as st
 
@@ -12,10 +12,9 @@ app = App(
         title='Streamlit',
         children=[
             Nav(
-                title='Report First Project', app=intro.app,
+                title='Intro', app=intro.app,
                 children=[
-                    Nav(title='Sales bar chart', app=streamlit_bar_chart.app),
-                    Nav(title='Line bar chart', app=streamlit_line_chart.app),
+                    Nav(title='Sales Report', app=sales_report.app),
                 ]
             ),
         ]

@@ -5,7 +5,7 @@ import snowflake.connector
 import plotly.express as px
 import pendulum
 
-def app():
+def app(start_date, end_date):
 
     @st.cache_resource
     def get_snowflake_connection():
@@ -27,24 +27,6 @@ def app():
             schema=schema
         )
         return conn
-    
-
-    @st.cache_data(experimental_allow_widgets=True)
-    def get_date_range():
-        default_end_date = pendulum.today().date()
-        default_start_date = default_end_date.start_of('month')
-            
-        dates = st.date_input(
-            label='Dates',
-            value=(default_start_date, default_end_date),
-            key='date_input'
-        )
-
-        if len(dates) != 2:
-            st.stop()
-
-        start_date, end_date = dates
-        return start_date, end_date
 
 
     @st.cache_data
@@ -116,7 +98,6 @@ def app():
 
     conn = get_snowflake_connection()
 
-    start_date, end_date = get_date_range()
     query = read_query_file('first_project/sql/sales_line_chart.sql')
     result = execute_query(conn, query, start_date, end_date)
     fig = create_sales_line_chart(result)
