@@ -62,10 +62,10 @@ def app(start_date, end_date):
             x='ORDER_DATE', 
             y='TOTAL_SALES', 
             color='ORDER_SOURCE',
-            width=1000, 
+            width=1200, 
             color_discrete_map={
                 'Offline': '#ff9d5c',
-                'Online': '#29C5F6'
+                'Online': '#028A0F'
             }
         )
         for x, y in zip(result['ORDER_DATE'], result['TOTAL_SALES']):
